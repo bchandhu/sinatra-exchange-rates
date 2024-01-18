@@ -9,8 +9,6 @@ gem "sinatra-contrib"
 # Use Puma as the app server
 gem "puma", "~> 5.0"
 
-gem "http"
-
 group :development do
   gem "better_errors"
   gem "binding_of_caller"
@@ -23,6 +21,7 @@ group :development, :test do
 end
 
 group :test do
+  gem "http"
   gem "capybara"
   gem "draft_matchers"
   gem "rspec"
