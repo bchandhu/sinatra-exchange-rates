@@ -1,32 +1,34 @@
 require "sinatra"
 require "sinatra/reloader"
-require "net/http"
-require "json"
+require 'net/http'
+require 'json'
 
+# Home route
 get("/") do
-  url = URI("https://api.exchangerate.host/symbols")
-  raw_data = Net::HTTP.get(url)
-  parsed_data = JSON.parse(raw_data)
-  @hash = parsed_data.fetch("symbols")
-  erb(:app)
+  uri = URI("https://api.exchangerate.host/symbols")
+  response = Net::HTTP.get(uri)
+  @symbols = JSON.parse(response)["symbols"]
+
+  erb :home
 end
 
-get("/:from") do
-  @symbol1 = params.fetch("from")
-  url = URI("https://api.exchangerate.host/symbols")
-  raw_data = Net::HTTP.get(url)
-  parsed_data = JSON.parse(raw_data)
-  @hash = parsed_data.fetch("symbols")
-  erb(:from)
+# Single currency route
+get("/:currency") do |currency|
+  uri = URI("https://api.exchangerate.host/symbols")
+  response = Net::HTTP.get(uri)
+  @currency = currency
+  @symbols = JSON.parse(response)["symbols"]
+
+  erb :currency
 end
 
-get("/:from/:to") do
-  @symbol1 = params.fetch("from")
-  @symbol2 = params.fetch("to")
-  url = URI("https://api.exchangerate.host/convert?from=#{@symbol1}&to=#{@symbol2}")
-  raw_data = Net::HTTP.get(url)
-  parsed_data = JSON.parse(raw_data)
-  @hash = parsed_data.fetch("info")
-  @value = @hash.fetch("rate")
-  erb(:to)
+# Pair of currencies route
+get("/:currency1/:currency2") do |currency1, currency2|
+  uri = URI("https://api.exchangerate.host/convert?from=#{currency1}&to=#{currency2}")
+  response = Net::HTTP.get(uri)
+  @currency1 = currency1
+  @currency2 = currency2
+  @conversion_rate = JSON.parse(response)["info"]["rate"]
+
+  erb :conversion
 end
