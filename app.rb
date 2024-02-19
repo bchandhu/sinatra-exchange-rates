@@ -5,7 +5,7 @@ require 'json'
 
 # Home route
 get("/") do
-  uri = URI("https://api.exchangerate.host/symbols")
+  uri = URI("http://api.exchangerate.host/list?access_key=#{ENV["EXCHANGE_RATES_KEY"]}")
   response = Net::HTTP.get(uri)
   @symbols = JSON.parse(response)["symbols"]
 
@@ -14,7 +14,7 @@ end
 
 # Single currency route
 get("/:currency") do |currency|
-  uri = URI("https://api.exchangerate.host/symbols")
+
   response = Net::HTTP.get(uri)
   @currency = currency
   @symbols = JSON.parse(response)["symbols"]
